@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Controle de Férias — Líderfarma</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='%238cc63e'/><text x='32' y='43' font-family='Arial' font-size='30' font-weight='bold' text-anchor='middle' fill='white'>F</text></svg>">
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #f4f6f4; }
+    /* o sistema ocupa a tela inteira */
+    #app {
+      position: fixed; inset: 0; width: 100%; height: 100%;
+      height: 100dvh; border: 0; display: block; background: transparent;
+    }
+    /* aviso enquanto o Google carrega o sistema (fica por trás do iframe) */
+    #carregando {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 14px;
+      font-family: -apple-system, 'Segoe UI', Arial, sans-serif; color: #6b7280; font-size: 14px;
+    }
+    .spin {
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 4px solid #e6e9e6; border-top-color: #8cc63e; animation: g 0.9s linear infinite;
+    }
+    @keyframes g { to { transform: rotate(360deg); } }
+    #carregando a { color: #6fae23; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div id="carregando">
+    <div class="spin"></div>
+    <div>Carregando o Controle de Férias…</div>
+    <div id="fallback" style="display:none">
+      Demorando? <a id="abrir" href="#" target="_blank" rel="noopener">Abrir em nova aba</a>
+    </div>
+  </div>
+
+  <iframe id="app" title="Controle de Férias — Líderfarma"
+          allow="clipboard-read; clipboard-write; fullscreen"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+  <script>
+    // >>> Cole aqui o link da implantação do Apps Script (o que termina em /exec) <<<
+    // Apps Script > Implantar > Gerenciar implantações > copiar "URL do app da Web".
+    // Ao publicar versões novas, edite a implantação existente: o link não muda.
+    var APP_URL = 'COLE_AQUI_O_LINK_EXEC';
+
+    (function () {
+      var ok = /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(APP_URL);
+      var msg = document.getElementById('carregando');
+      if (!ok) {
+        msg.innerHTML = '<div style="max-width:420px;text-align:center;line-height:1.5">'
+          + 'Configure o link do sistema na variável <b>APP_URL</b> do <b>index.html</b>.</div>';
+        document.getElementById('app').style.display = 'none';
+        return;
+      }
+      // repassa ?page=painel (link direto para o painel)
+      var page = new URLSearchParams(location.search).get('page');
+      var url = APP_URL + (page === 'painel' ? '?page=painel' : '');
+      document.getElementById('abrir').href = url;
+      document.getElementById('app').src = url;
+      // se em 12 s ainda estiver só o aviso visível, oferece abrir em nova aba
+      setTimeout(function () { document.getElementById('fallback').style.display = 'block'; }, 12000);
+    })();
+  </script>
+</body>
+</html>
